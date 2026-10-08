@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Revista PPI - IF Goiano</title>
+    <!-- Fonte Oficial e Elegante -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Biblioteca PDF.js da Mozilla -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <style>
+        :root {
+            --if-green: #008837;       /* Verde oficial IF Goiano */
+            --if-green-dark: #005F26;  /* Tom escuro para contrastes */
+            --if-red: #C8102E;         /* Vermelho carmim oficial IF Goiano */
+            --bg-dark: #121212;        /* Fundo externo neutro e sofisticado */
+            --card-bg: #FFFFFF;       /* Fundo das cartelas */
+            --text-dark: #1F2937;     /* Cor de texto legível */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* TELA 1: APRESENTAÇÃO E SUMÁRIO */
+        #screen-summary {
+            width: 100%;
+            max-width: 520px;
+            min-height: 100vh;
+            background: #F9FAFB;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .summary-header {
+            background: linear-gradient(135deg, var(--if-green), var(--if-green-dark));
+            color: #FFFFFF;
+            padding: 26px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--if-red);
+        }
+
+        .summary-header .badge {
+            background: var(--if-red);
+            color: #FFFFFF;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .summary-header h1 {
+            font-size: 1.3rem;
+            font-weight: 900;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .summary-header p {
+            font-size: 0.85rem;
+            margin-top: 6px;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        /* Barrinha discreta de autoria */
+        .summary-header .dev-bar {
+            margin-top: 10px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 4px 12px;
+            border-radius: 12px;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .summary-body {
+            padding: 24px 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .about-card {
+            background: #FFFFFF;
+            border-left: 4px solid var(--if-red);
+            padding: 16px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #4B5563;
+        }
+
+        .cta-btn-main {
+            background: var(--if-red);
+            color: #FFFFFF;
+            border: none;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            border-radius: 30px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(200, 16, 46, 0.4);
+            transition: transform 0.2s, background 0.2s;
+            text-align: center;
+        }
+
+        .cta-btn-main:hover {
+            background: #A00B23;
+            transform: translateY(-2px);
+        }
+
+        .summary-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--if-green);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--if-green);
+            padding-bottom: 6px;
+            margin-top: 10px;
+        }
+
+        .summary-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .summary-item {
+            background: #FFFFFF;
+            padding: 12px 14px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid #E5E7EB;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .summary-item:hover {
+            border-color: var(--if-green);
+            background: #F0FDF4;
+        }
+
+        .summary-item span.page-tag {
+            background: var(--if-green);
+            color: #FFFFFF;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .credits-footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        /* TELA 2: LEITOR INTERATIVO */
+        #screen-reader {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-dark);
+        }
+
+        header.reader-header {
+            width: 100%;
+            padding: 12px 20px;
+            background: var(--if-green);
+            border-bottom: 3px solid var(--if-red);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #FFFFFF;
+            z-index: 10;
+        }
+
+        header.reader-header h2 {
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70%;
+        }
+
+        .btn-back {
+            background: var(--if-red);
+            color: #FFFFFF;
+            border: none;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            border-radius: 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .viewport-container {
+            position: relative;
+            width: 100vw;
+            max-width: 480px;
+            height: calc(100vh - 130px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px;
+        }
+
+        .magazine-frame {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #FFFFFF;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        #pdf-render {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.4s ease, opacity 0.3s ease;
+        }
+
+        .page-turn {
+            animation: turnAnimation 0.5s ease-in-out forwards;
+        }
+
+        @keyframes turnAnimation {
+            0% { transform: rotateY(0deg); opacity: 1; }
+            50% { transform: rotateY(-85deg) scale(0.95); opacity: 0.4; }
+            100% { transform: rotateY(0deg); opacity: 1; }
+        }
+
+        .dog-ear {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 45px 45px 0;
+            border-color: transparent var(--if-green) transparent transparent;
+            filter: drop-shadow(-2px 2px 4px rgba(0, 0, 0, 0.4));
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.2s ease;
+        }
+
+        .dog-ear:hover, .dog-ear.folded {
+            border-width: 0 70px 70px 0;
+            border-color: transparent var(--if-red) transparent transparent;
+        }
+
+        footer.reader-footer {
+            width: 100%;
+            padding: 10px 20px;
+            background: #111111;
+            border-top: 3px solid var(--if-green);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 500px;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            background: var(--if-green);
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 18px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: background 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: var(--if-green-dark);
+        }
+
+        .page-counter {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 14px;
+            border-radius: 12px;
+        }
+
+        .page-counter span {
+            color: var(--if-red);
+        }
+
+        #loading {
+            position: absolute;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--if-green);
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TELA 1: APRESENTAÇÃO E SUMÁRIO -->
+    <div id="screen-summary">
+        <div class="summary-header">
+            <span class="badge">IF Goiano - Campus Ipameri</span>
+            <h1>Práticas Profissionais Integradas</h1>
+            <p>Vol. 02 | Edição: Nosso Empreendedorismo</p>
+            <div class="dev-bar">Plataforma desenvolvida pelo aluno Gabriel Costa Carneiro</div>
+        </div>
+
+        <div class="summary-body">
+            <div class="about-card">
+                Bem-vindo à plataforma interativa da <strong>Revista PPI</strong>. Esta publicação destaca lideranças empreendedoras locais de Ipameri e região, desenvolvida pelos estudantes do Curso Técnico em Administração.
+            </div>
+
+            <button class="cta-btn-main" id="start-reading-btn">📖 Iniciar Leitura</button>
+
+            <div class="summary-title">Sumário de Destaques</div>
+            
+            <ul class="summary-list">
+                <li class="summary-item" onclick="openAtPage(1)">
+                    <span>Capa & Editorial</span>
+                    <span class="page-tag">Pág. 1</span>
+                </li>
+                <li class="summary-item" onclick="openAtPage(3)">
+                    <span>O que é Empreendedorismo?</span>
+                    <span class="page-tag">Pág. 3</span>
+                </li>
+                <li class="summary-item" onclick="openAtPage(5)">
+                    <span>Vinhedos do Cerrado</span>
+                    <span class="page-tag">Pág. 5</span>
+                </li>
+                <li class="summary-item" onclick="openAtPage(7)">
+                    <span>Frutaria Almeida</span>
+                    <span class="page-tag">Pág. 7</span>
+                </li>
+                <li class="summary-item" onclick="openAtPage(11)">
+                    <span>Bar do Tião e Pastelaria</span>
+                    <span class="page-tag">Pág. 11</span>
+                </li>
+                <li class="summary-item" onclick="openAtPage(27)">
+                    <span>Colchões Ortobom</span>
+                    <span class="page-tag">Pág. 27</span>
+                </li>
+                <li class="summary-item" onclick="openAtPage(33)">
+                    <span>História do Empreendedorismo em Ipameri</span>
+                    <span class="page-tag">Pág. 33</span>
+                </li>
+                <li class="summary-item" onclick="openAtPage(73)">
+                    <span>Supermercado Verônica</span>
+                    <span class="page-tag">Pág. 73</span>
+                </li>
+            </ul>
+
+            <div class="credits-footer">
+                Desenvolvido por <strong>Gabriel Costa Carneiro</strong> • IF Goiano
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA 2: LEITOR DA REVISTA -->
+    <div id="screen-reader">
+        <header class="reader-header">
+            <h2>Revista PPI - Empreendedorismo</h2>
+            <button class="btn-back" id="back-to-summary">☰ Sumário</button>
+        </header>
+
+        <div class="viewport-container">
+            <div class="magazine-frame">
+                <div id="loading">Carregando PDF...</div>
+                <canvas id="pdf-render"></canvas>
+                
+                <!-- Orelhinha de Burro (Dobra em 2 Passos) -->
+                <div class="dog-ear" id="dogEar" title="Clique 1: Dobrar | Clique 2: Virar Página"></div>
+            </div>
+        </div>
+
+        <footer class="reader-footer">
+            <button class="nav-btn" id="prev-btn">◄ Anterior</button>
+            <div class="page-counter">
+                Pág. <span id="page-num">1</span> / <span id="page-count">-</span>
+            </div>
+            <button class="nav-btn" id="next-btn">Próxima ►</button>
+        </footer>
+    </div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const url = './revista.pdf';
+
+        let pdfDoc = null,
+            pageNum = 1,
+            pageIsRendering = false,
+            pageNumIsPending = null;
+
+        const scale = 2,
+            canvas = document.getElementById('pdf-render'),
+            ctx = canvas.getContext('2d'),
+            dogEar = document.getElementById('dogEar'),
+            loadingEl = document.getElementById('loading'),
+            screenSummary = document.getElementById('screen-summary'),
+            screenReader = document.getElementById('screen-reader');
+
+        function showReader() {
+            screenSummary.style.display = 'none';
+            screenReader.style.display = 'flex';
+            if (!pdfDoc) {
+                loadPDF();
+            } else {
+                renderPage(pageNum);
+            }
+        }
+
+        document.getElementById('back-to-summary').addEventListener('click', () => {
+            screenReader.style.display = 'none';
+            screenSummary.style.display = 'flex';
+        });
+
+        document.getElementById('start-reading-btn').addEventListener('click', () => {
+            showReader();
+        });
+
+        function openAtPage(num) {
+            pageNum = num;
+            showReader();
+        }
+
+        const renderPage = num => {
+            pageIsRendering = true;
+
+            pdfDoc.getPage(num).then(page => {
+                const viewport = page.getViewport({ scale: scale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+
+                const renderTask = page.render(renderContext);
+
+                renderTask.promise.then(() => {
+                    pageIsRendering = false;
+                    loadingEl.style.display = 'none';
+
+                    if (pageNumIsPending !== null) {
+                        renderPage(pageNumIsPending);
+                        pageNumIsPending = null;
+                    }
+                });
+            });
+
+            document.getElementById('page-num').textContent = num;
+        };
+
+        const queueRenderPage = num => {
+            if (pageIsRendering) {
+                pageNumIsPending = num;
+            } else {
+                canvas.classList.add('page-turn');
+                setTimeout(() => canvas.classList.remove('page-turn'), 500);
+                renderPage(num);
+            }
+        };
+
+        const showNextPage = () => {
+            if (!pdfDoc || pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            dogEar.classList.remove('folded');
+            queueRenderPage(pageNum);
+        };
+
+        const showPrevPage = () => {
+            if (!pdfDoc || pageNum <= 1) return;
+            pageNum--;
+            dogEar.classList.remove('folded');
+            queueRenderPage(pageNum);
+        };
+
+        function loadPDF() {
+            pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
+                pdfDoc = pdfDoc_;
+                document.getElementById('page-count').textContent = pdfDoc.numPages;
+                renderPage(pageNum);
+            }).catch(err => {
+                loadingEl.textContent = "Aviso: Envie o arquivo 'revista.pdf' para a mesma pasta.";
+                console.error(err);
+            });
+        }
+
+        document.getElementById('next-btn').addEventListener('click', showNextPage);
+        document.getElementById('prev-btn').addEventListener('click', showPrevPage);
+
+        dogEar.addEventListener('click', () => {
+            if (!dogEar.classList.contains('folded')) {
+                dogEar.classList.add('folded');
+            } else {
+                showNextPage();
+            }
+        });
+    </script>
+</body>
+</html>
